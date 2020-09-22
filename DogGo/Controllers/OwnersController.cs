@@ -8,11 +8,13 @@ using DogGo.Models.ViewModels;
 using DogGo.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DogGo.Controllers
 {
+    [Authorize]
     public class OwnersController : Controller
     {
         private readonly IOwnerRepository _ownerRepo;
@@ -128,6 +130,7 @@ namespace DogGo.Controllers
                 };
                 return View(vm);
             }
+
         }
 
         // GET: Owners/Delete/5
@@ -188,6 +191,13 @@ namespace DogGo.Controllers
                 new ClaimsPrincipal(claimsIdentity));
 
             return RedirectToAction("Index", "Dogs");
+        }
+
+        // logout
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

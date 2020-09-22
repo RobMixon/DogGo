@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DogGo.Controllers
 {
+    [Authorize]
     public class DogsController : Controller
     {
         private readonly IDogRepository _dogRepository;
@@ -23,8 +24,13 @@ namespace DogGo.Controllers
             _ownerRepository = ownerRepository;
         }
 
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
+        }
+
         // GET: DogsController
-        [Authorize]
         public ActionResult Index()
         {
             int ownerId = GetCurrentUserId();
@@ -46,7 +52,6 @@ namespace DogGo.Controllers
 
 
         // LOOK AT THIS
-        [Authorize]
         public ActionResult Create()
         {
             // We use a view model because we need the list of Owners in the Create view
@@ -145,10 +150,6 @@ namespace DogGo.Controllers
             }
         }
         // helper method to get current users id
-        private int GetCurrentUserId()
-        {
-            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return int.Parse(id);
-        }
+
     }
 }
